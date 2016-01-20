@@ -835,7 +835,9 @@ ElseIf GetHandstrokeGapMode() = MinimumSquaredError Then
         End If
     Next i
     
-    ' Minimum squared error handstroke gap calculation
+    ' Minimum squared error handstroke gap calculation'
+    ' Given t_ideal = t_mid + (i-12.5)*interbellGap, find interbellGap to minimise sum_1=1:24( (t_actual - t_ideal)^2 )
+    '   ==> interbellGap = sum_i=1:24( (t_actual - t_ideal) * (i - 12.5) ) / sum_i=1:24( (i - 12.5)^2 )
     
     'Average centrepoint of wholepull
     Set meanWholepullCentre = positionAvgs.Offset(0, NumBells(team) * 2 + 1)
@@ -851,7 +853,7 @@ ElseIf GetHandstrokeGapMode() = MinimumSquaredError Then
     'Set up diffs to average blows
     For i = 1 To (NumBells(team) * 2)
         mseTable.Offset(diffToCentrepointRow, i - 1) = "=" & positionAvgs.Offset(0, i - 1).Address(RowAbsolute:=False) & "-" & meanWholepullCentre.Address
-        mseTable.Offset(interbellMultipleRow, i - 1) = (i - 12.5) / 1150
+        mseTable.Offset(interbellMultipleRow, i - 1) = (i - 12.5) / 1150 ' 1150 = sum_i=1:24( (i - 12.5)^2 )
         mseTable.Offset(vectorMultiplyRow, i - 1) = "=" & mseTable.Offset(diffToCentrepointRow, i - 1).Address & "*" & mseTable.Offset(interbellMultipleRow, i - 1).Address
     Next i
     
